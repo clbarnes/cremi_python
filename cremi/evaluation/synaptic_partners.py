@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
-from munkres import Munkres
+from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 
@@ -43,8 +43,8 @@ def synaptic_partners_fscore(rec_annotations, gt_annotations, gt_segmentation,
 
     # match using Hungarian method
     print("Finding cost-minimal matches...")
-    munkres = Munkres()
-    matches = munkres.compute(costs.copy())  # have to copy, because munkres changes the cost matrix...
+    matches = linear_sum_assignment(costs - np.amax(costs) - 1)
+    matches = zip(matches[0], matches[1])  # scipy returns matches as numpy arrays
 
     filtered_matches = [(i, j, costs[i][j]) for (i, j) in matches if costs[i][j] <= matching_threshold]
     print(str(len(filtered_matches)) + " matches found")
@@ -101,9 +101,10 @@ def pre_post_locations(annotations, gt_segmentation):
     locations = annotations.locations()
     shift = sub(annotations.offset, gt_segmentation.offset)
 
-    return [(add(annotations.get_annotation(pre_id)[1], shift),
-             add(annotations.get_annotation(post_id)[1], shift))
-            for (pre_id, post_id) in annotations.pre_post_partners]
+    return [
+        (add(annotations.get_annotation(pre_id)[1], shift), add(annotations.get_annotation(post_id)[1], shift))
+        for (pre_id, post_id) in annotations.pre_post_partners
+    ]
 
 
 def pre_post_labels(locations, segmentation):
