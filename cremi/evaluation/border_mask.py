@@ -40,7 +40,8 @@ def create_and_write_masked_neuron_ids(in_file, out_file, max_dist, background_l
     if ( not in_file.has_neuron_ids() ) or ( (not overwrite) and out_file.has_neuron_ids() ):
         return
 
-    neuron_ids, resolution, offset, comment = in_file.read_neuron_ids()
+    v = in_file.read_neuron_ids()
+    neuron_ids, resolution, offset, comment = v.data, v.resolution, v.offset, v.comment
     comment = ('' if comment is None else comment + ' ') + 'Border masked with max_dist=%f' % max_dist
 
     path = "/volumes/labels/neuron_ids"

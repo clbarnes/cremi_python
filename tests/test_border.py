@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import warnings
 
 import numpy as np
 import skimage.io as io
@@ -21,10 +22,16 @@ if __name__ == "__main__":
         evaluation.create_border_mask(img[0][...,np.newaxis],target,w,105,axis=2)
         img.append(target[...,0])
 
-    v = CollectionViewer(img)
-    v.show()
+    try:
+        v = CollectionViewer(img)
+        v.show()
+    except AttributeError as e:
+        if 'Qt' in str(e):
+            warnings.warn('Qt-related error: CollectionViewer not working')
+        else:
+            raise
 
     cfIn  = CremiFile(abspath('example.h5'), 'r')
-    cfOut = CremiFile(abspath('output.h5'), 'a')
+    cfOut = CremiFile(abspath('output.h5'), 'w')
 
     evaluation.create_and_write_masked_neuron_ids(cfIn, cfOut, 3, 240, overwrite=True)
