@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 
 import numpy as np
 import skimage.io as io
@@ -8,8 +9,12 @@ import cremi.evaluation as evaluation
 import cremi.io.CremiFile as CremiFile
 
 
+def abspath(local_path):
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), local_path)
+
+
 if __name__ == "__main__":
-    img = [io.imread('example.png')]
+    img = [io.imread(abspath('example.png'))]
     
     for w in (0, 2, 4, 10):
         target = np.copy(img[0])[...,np.newaxis]
@@ -19,7 +24,7 @@ if __name__ == "__main__":
     v = CollectionViewer(img)
     v.show()
 
-    cfIn  = CremiFile('example.h5', 'r')
-    cfOut = CremiFile('output.h5', 'a')
+    cfIn  = CremiFile(abspath('example.h5'), 'r')
+    cfOut = CremiFile(abspath('output.h5'), 'a')
 
     evaluation.create_and_write_masked_neuron_ids(cfIn, cfOut, 3, 240, overwrite=True)
