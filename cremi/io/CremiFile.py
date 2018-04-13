@@ -4,6 +4,10 @@ import numpy as np
 from .. import Annotations
 from .. import Volume
 
+try:
+    unicode_dtype = h5py.special_dtype(vlen=unicode)
+except NameError:
+    unicode_dtype = h5py.special_dtype(vlen=str)
 
 class CremiFile(object):
 
@@ -101,18 +105,18 @@ class CremiFile(object):
         if tuple(annotations.offset) != (0.0, 0.0, 0.0):
             self.h5file["/annotations"].attrs["offset"] = annotations.offset
 
-        self.__create_dataset("/annotations/ids", data=annotations.ids(), dtype=np.uint64)
+        self.__create_dataset("/annotations/ids", data=list(annotations.ids()), dtype=np.uint64)
         self.__create_dataset("/annotations/types",
-                              data=annotations.types(),
-                              dtype=h5py.special_dtype(vlen=unicode),
+                              data=list(annotations.types()),
+                              dtype=unicode_dtype,
                               compression="gzip")
-        self.__create_dataset("/annotations/locations", data=annotations.locations(), dtype=np.double)
+        self.__create_dataset("/annotations/locations", data=list(annotations.locations()), dtype=np.double)
 
         if len(annotations.comments) > 0:
-            self.__create_dataset("/annotations/comments/target_ids", data=annotations.comments.keys(), dtype=np.uint64)
+            self.__create_dataset("/annotations/comments/target_ids", data=list(annotations.comments.keys()), dtype=np.uint64)
             self.__create_dataset("/annotations/comments/comments",
-                                  data=annotations.comments.values(),
-                                  dtype=h5py.special_dtype(vlen=unicode))
+                                  data=list(annotations.comments.values()),
+                                  dtype=unicode_dtype)
 
         if len(annotations.pre_post_partners) > 0:
             self.__create_dataset("/annotations/presynaptic_site/partners",
