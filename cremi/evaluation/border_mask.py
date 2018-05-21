@@ -56,8 +56,7 @@ def create_and_write_masked_neuron_ids(in_file, out_file, max_dist, background_l
     target = group.create_dataset(ds_name, shape=neuron_ids.shape, dtype=neuron_ids.dtype)
     target.attrs["resolution"] = resolution
     target.attrs["comment"] = comment
-    if offset != (0.0, 0.0, 0.0):
-        target.attrs["offset"] = offset
+    target.attrs["offset"] = offset
 	
     create_border_mask(neuron_ids, target, max_dist, background_label)
 
