@@ -11,7 +11,7 @@ except NameError:
 
 class CremiFile(object):
 
-    def __init__(self, filename, mode):
+    def __init__(self, filename, mode="a"):
 
         self.h5file = h5py.File(filename, mode)
 
@@ -232,3 +232,9 @@ class CremiFile(object):
     def close(self):
 
         self.h5file.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
