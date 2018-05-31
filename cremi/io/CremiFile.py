@@ -290,5 +290,4 @@ class CremiN5(AbstractCremiFile):
         chunks = [max(c, s) for c, s in zip(self.chunks, data.shape)]
 
         ds = self.file.create_dataset(path, shape=data.shape, dtype=dtype, compression=compression, chunks=chunks)
-        if data.sum():
-            ds[:] = data
+        ds[:] = data
