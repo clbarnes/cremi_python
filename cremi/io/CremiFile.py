@@ -272,9 +272,9 @@ class CremiN5(AbstractCremiFile):
     def __init__(self, filename, chunks=None, *args, **kwargs):
         if not z5py:
             raise RuntimeError("N5 files not supported; install z5py")
-        self.file = z5py.File(filename, use_zarr_format=False)
+        self.file = z5py.N5File(filename)
         self.file.attrs["file_format"] = "0.2"
-        self.chunks = chunks or (100, 100, 100)
+        self.chunks = chunks
 
     @property
     def n5file(self):
@@ -295,5 +295,4 @@ class CremiN5(AbstractCremiFile):
         self._replace_compatible_dataset(path, data, dtype)
         chunks = [max(c, s) for c, s in zip(self.chunks, data.shape)]
 
-        ds = self.file.create_dataset(path, shape=data.shape, dtype=dtype, compression=compression, chunks=chunks)
-        ds[:] = data
+        self.file.create_dataset(path, data=data, dtype=dtype, compression=compression, chunks=chunks)
