@@ -124,9 +124,15 @@ class AbstractCremiFile(object):
         )
 
         if len(annotations.comments) > 0:
-            self._create_dataset("/annotations/comments/target_ids", data=list(annotations.comments.keys()), dtype=np.uint64)
+            keys = []
+            values = []
+            for id_ in annotations.ids():
+                if id_ in annotations.comments:
+                    keys.append(id_)
+                    values.append(annotations.comments[id_])
+            self._create_dataset("/annotations/comments/target_ids", data=keys, dtype=np.uint64)
             self._create_dataset("/annotations/comments/comments",
-                                 data=list(annotations.comments.values()),
+                                 data=values,
                                  dtype=unicode_dtype)
 
         if len(annotations.pre_post_partners) > 0:
@@ -225,7 +231,7 @@ class AbstractCremiFile(object):
         types = self.file["/annotations/types"]
         locations = self.file["/annotations/locations"]
         for idx, ann_type, location in zip(ids, types, locations):
-            annotations.add_annotation(idx, ann_type, self._spatial(locations))
+            annotations.add_annotation(idx, ann_type, self._spatial(location))
 
         if "comments" in self.file["/annotations"]:
             ids = self.file["/annotations/comments/target_ids"]
