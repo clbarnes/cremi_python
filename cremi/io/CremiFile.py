@@ -37,7 +37,7 @@ class AbstractCremiFile(object):
         Otherwise, replaces the dataset.
         """
 
-        self._replace_compatible_dataset(self, path, data, dtype)
+        self._replace_compatible_dataset(path, data, dtype)
         self.file.create_dataset(path, data=data, dtype=dtype, compression=compression)
 
     def _replace_compatible_dataset(self, path, data, dtype):
