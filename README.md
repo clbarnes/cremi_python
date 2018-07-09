@@ -1,3 +1,10 @@
+This is a fork of the original [`cremi-python`](https://github.com/cremi/cremi_python)
+featuring python 3 support based partially on 
+[Constantin Pape's fork](https://github.com/constantinpape/cremi_python/tree/python3)
+(N.B. regressions of py2 compatibility are not tested), 
+and some refactoring to allow future support of [N5](https://github.com/saalfeldlab/n5) 
+datasets via [z5py](https://github.com/constantinpape/z5).
+
 CREMI Python Scripts
 ====================
 
