@@ -231,13 +231,13 @@ class AbstractCremiFile(object):
         types = self.file["/annotations/types"]
         locations = self.file["/annotations/locations"]
         for idx, ann_type, location in zip(ids, types, locations):
-            annotations.add_annotation(idx, ann_type, self._spatial(location))
+            annotations.add_annotation(idx, ann_type.decode("utf-8"), self._spatial(location))
 
         if "comments" in self.file["/annotations"]:
             ids = self.file["/annotations/comments/target_ids"]
             comments = self.file["/annotations/comments/comments"]
             for (id, comment) in zip(ids, comments):
-                annotations.add_comment(id, comment)
+                annotations.add_comment(id, comment.decode("utf-8"))
 
         if "presynaptic_site/partners" in self.file["/annotations"]:
             pre_post = self.file["/annotations/presynaptic_site/partners"]
